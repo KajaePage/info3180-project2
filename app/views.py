@@ -7,13 +7,14 @@ This file creates your application.
 
 from app import app, db, login_manager
 import os
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash,jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import LoginForm
+from app.forms import LoginForm,RegisterForm,CarForm
 from app.models import users,cars,favourites
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 from flask_wtf.csrf import generate_csrf
-
+import datetime
 
 ###
 # Routing for your application.
@@ -29,7 +30,30 @@ def get_csrf():
 
 @app.route('/api/register', methods = ['POST'])
 def register():
-    return None
+    print(request.headers.get('X-CSRF-TOKEN'))
+    print('------ {0}'.format(request.form))
+    form = RegisterForm()
+    form.username.data = request.form.get("username")
+    form.password.data = request.form.get("password")
+    form.name.data = request.form.get("name")
+    form.email.data = request.form.get("email")
+    form.locat.data = request.form.get("location")
+    form.bio.data = request.form.get("biography")
+    date_reg = datetime.datetime.now()
+    if(request.files['photo']):
+        form.photo.data = request.files['photo']
+    else:
+        return jsonify(errors = form_errors(form))
+    if form.validate_on_submit():
+        filename = secure_filename(form.photo.data.filename)
+        form.photo.data.save(app.config['UPLOAD_FOLDER'] + '/' + filename)
+        user = users(form.username.data,form.password.data,form.name.data,form.email.data,form.locat.data,form.bio.data,date_reg,filename)
+        db.session.add(user)
+        db.session.commit()  
+    else:
+        return jsonify(errors = form_errors(form))
+    return jsonify(message = "Registered Successfully")
+
 
 @app.route('/api/auth/login', methods = ['POST'])
 def login():
