@@ -8,6 +8,7 @@ This file creates your application.
 from app import app
 from flask import render_template, request, jsonify, send_file
 import os
+from flask_wtf.csrf import generate_csrf
 
 
 ###
@@ -18,7 +19,49 @@ import os
 def index():
     return jsonify(message="This is the beginning of our API")
 
+@app.route('/api/csrf-token', methods=['GET'])
+def get_csrf():
+ return jsonify({'csrf_token': generate_csrf()})
 
+@app.route('/api/register', methods = ['POST'])
+def register():
+    return None
+
+@app.route('/api/auth/login', methods = ['POST'])
+def login():
+    return None
+
+@app.route('/api/auth/logout', methods = ['POST'])
+def logout():
+    return None
+
+@app.route('/api/cars', methods = ['POST'])
+def carsg():
+    return None
+
+@app.route('/api/cars', methods = ['GET'])
+def carsp():
+    return None
+
+@app.route('/api/cars/<car_id>', methods = ['GET'])
+def cars(car_id):
+    return None
+
+@app.route('/api/cars/<car_id>/favourite', methods = ['POST'])
+def carsfav(car_id):
+    return None
+
+@app.route('/api/search', methods = ['GET'])
+def search():
+    return None
+
+@app.route('/api/users/<user_id>', methods = ['GET'])
+def userdata(user_id):
+    return None
+
+@app.route('/api/users/<user_id>/favourites', methods = ['GET'])
+def userfav(user_id):
+    return None
 ###
 # The functions below should be applicable to all Flask apps.
 ###
