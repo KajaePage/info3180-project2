@@ -10,7 +10,7 @@
         <div v-if="response.message != 'novalue'" class = "success-message">
             {{response.message}}
         </div>
-        <form method="POST" enctype="multipart/form-data" id = "RegistrationForm" @submit.prevent="uploadPhoto" class = "formc">
+        <form method="POST" enctype="multipart/form-data" id = "LoginForm" @submit.prevent="uploadPhoto" class = "formc">
             <ul class="formstf">
                 <li class="form-field">
                     <label>Username <span class="required">*</span></label>
@@ -22,30 +22,6 @@
                     <input v-model="form.password" class="input" type="text" placeholder="Text input" name = "password">
                 </li>
 
-                <li class="form-field">
-                    <label>Name <span class="required">*</span></label>
-                    <input v-model="form.name" class="input" type="text" placeholder="Text input" name = "name">
-                </li>
-
-                <li class="form-field">
-                    <label>Location <span class="required">*</span></label>
-                    <input v-model="form.locat" class="input" type="text" placeholder="Text input" name = "location">
-                </li>
-
-                <li class="form-field">
-                    <label>Biography <span class="required">*</span></label>
-                    <input v-model="form.bio" class="input" type="text" placeholder="Text input" name = "biography">
-                </li>
-
-                <li class="form-field">
-                    <label>Email <span class="required">*</span></label>
-                    <input v-model="form.email" class="input" type="email" placeholder="Text input" name = "email">
-                </li>
-
-                <li class="form-field">
-                    <label>Photo <span class="required">*</span></label>
-                    <input type="file" accept="image/*" class="form-control-file" @change="updatePhoto($event.target.files)" id ="photo" name= "photo">
-                </li>
             </ul>
             <input class = "button" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()"/>
         </form> 
@@ -61,37 +37,20 @@ export default {
           form:{
               password: '',
               username: '',
-              name: '',
-              locat: '',
-              bio: '',
-              email: '',
-              photo: {}
-          }
+          },
+          auth: ''
       }        
     },
     created() {
         this.getCsrfToken();
+        //this.logcheck();
     },
     methods:{
-        updatePhoto(files){
-            console.log(files[0])
-                if (!files.length){
-                    console.log("??")
-                    return;
-                } 
-                
-
-                this.form.photo = {
-                    name: files[0].name,
-                    data: files[0]
-                };
-            },
         uploadPhoto(){
             let self = this
-            let RegistrationForm = document.getElementById('RegistrationForm');
-            let form_data = new FormData(RegistrationForm);
-            form_data.append('photo',this.form.photo.data)
-            fetch("/api/register", { 
+            let LoginForm = document.getElementById('LoginForm');
+            let form_data = new FormData(LoginForm);
+            fetch("/api/auth/login", { 
                 method : 'POST',
                 headers: {
                     'X-CSRF-TOKEN': this.csrf_token
@@ -103,7 +62,7 @@ export default {
             })
             .then(function (data) {
             // display a success message
-            self.response = data;
+            self.auth = data.auth;
             console.log(data);
             })
             .catch(function (error) {
@@ -117,6 +76,15 @@ export default {
             .then((data) =>{
                 console.log(data);
                 self.csrf_token = data.csrf_token;
+            })
+        },
+        logcheck(){
+            let self = this;
+            fetch('/api/auth/logcheck')
+            .then((response)=> response.json())
+            .then((data) =>{
+                console.log(data);
+                self.auth = data.auth;
             })
         },
         containskey(obj, key){

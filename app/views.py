@@ -8,13 +8,14 @@ This file creates your application.
 from app import app, db, login_manager
 import os
 from flask import render_template, request, redirect, url_for, flash,jsonify
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from app.forms import LoginForm,RegisterForm,CarForm
 from app.models import users,cars,favourites
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import generate_csrf
 import datetime
+
 
 ###
 # Routing for your application.
@@ -27,6 +28,10 @@ def index():
 @app.route('/api/csrf-token', methods=['GET'])
 def get_csrf():
  return jsonify({'csrf_token': generate_csrf()})
+
+@app.route('/api/auth/logcheck', methods=['GET'])
+def logcheck():
+ return jsonify(auth = current_user.is_authenticated)
 
 @app.route('/api/register', methods = ['POST'])
 def register():
@@ -57,8 +62,20 @@ def register():
 
 @app.route('/api/auth/login', methods = ['POST'])
 def login():
-    return None
-
+    form = LoginForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            
+            user = users.query.filter_by(username=username).first()
+            if user is not None and check_password_hash(user.password, password):
+                login_user(user)
+                return jsonify(message = "Logged in Successfully",auth = True)
+            else:
+                return jsonify(errors = "Username or Password Incorrect")
+        else:
+            return jsonify(errors = form_errors(form))
 @app.route('/api/auth/logout', methods = ['POST'])
 def logout():
     return None

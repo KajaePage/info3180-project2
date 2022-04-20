@@ -1,20 +1,20 @@
 
 <template>
     <div class="form container">
-        <h2>Registration</h2>
-        <RegistrationForm />
+        <h2>Login</h2>
+        <LoginForm />
     </div>
     
 </template>
 
 
 <script>
-    import RegistrationForm from "@/components/RegistrationForm.vue";
+    import LoginForm from "@/components/LoginForm.vue";
     export default {
         data() {
         return {};
         },
-    components: {RegistrationForm}
+    components: {LoginForm}
     };
     
 </script>

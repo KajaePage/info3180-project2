@@ -80,7 +80,7 @@ class users(db.Model):
     username = db.Column(db.String(64),unique=True)
     password = db.Column(db.String(128))
     name = db.Column(db.String(128))
-    email = db.Column(db.String(128))
+    email = db.Column(db.String(128),unique=True)
     location = db.Column(db.String(512))
     biography = db.Column(db.String(512))
     date_joined = db.Column(db.Date())
