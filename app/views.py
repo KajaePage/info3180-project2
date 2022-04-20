@@ -5,9 +5,13 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from app import app
-from flask import render_template, request, jsonify, send_file
+from app import app, db, login_manager
 import os
+from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, current_user, login_required
+from app.forms import LoginForm
+from app.models import users,cars,favourites
+from werkzeug.security import check_password_hash
 from flask_wtf.csrf import generate_csrf
 
 

@@ -1,11 +1,13 @@
 from . import db
+from werkzeug.security import generate_password_hash
 
-class Cars(db.Model):
+class cars(db.Model):
+
     # You can use this to change the table name. The default convention is to use
     # the class name. In this case a class name of UserProfile would create a
     # user_profile (singular) table, but if we specify __tablename__ we can change it
     # to `user_profiles` (plural) or some other name.
-    __tablename__ = 'Cars'
+    __tablename__ = 'cars'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer())
@@ -41,12 +43,12 @@ class Cars(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.id)
 
-class Favourites(db.Model):
+class favourites(db.Model):
     # You can use this to change the table name. The default convention is to use
     # the class name. In this case a class name of UserProfile would create a
     # user_profile (singular) table, but if we specify __tablename__ we can change it
     # to `user_profiles` (plural) or some other name.
-    __tablename__ = 'Favourites'
+    __tablename__ = 'favourites'
 
     id = db.Column(db.Integer, primary_key=True)
     car_id = db.Column(db.Integer())
@@ -67,15 +69,15 @@ class Favourites(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.id)
 
-class Users(db.Model):
+class users(db.Model):
     # You can use this to change the table name. The default convention is to use
     # the class name. In this case a class name of UserProfile would create a
     # user_profile (singular) table, but if we specify __tablename__ we can change it
     # to `user_profiles` (plural) or some other name.
-    __tablename__ = 'Users'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64))
+    username = db.Column(db.String(64),unique=True)
     password = db.Column(db.String(128))
     name = db.Column(db.String(128))
     email = db.Column(db.String(128))
@@ -86,7 +88,7 @@ class Users(db.Model):
 
     def __init__(self, username, password, name, email, location, biography, date_joined, photo):
             self.username = username
-            self.password = password
+            self.password = generate_password_hash(password, method='pbkdf2:sha256')
             self.name = name
             self.email = email
             self.location = location
@@ -94,6 +96,15 @@ class Users(db.Model):
             self.date_joined = date_joined
             self.photo = photo
 
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
 
     def get_id(self):
         try:
