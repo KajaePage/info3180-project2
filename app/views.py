@@ -10,12 +10,47 @@ import os
 from flask import render_template, request, redirect, url_for, flash,jsonify
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from app.forms import LoginForm,RegisterForm,CarForm
+from app.config import Config
 from app.models import users,cars,favourites
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import generate_csrf
-import datetime
+from datetime import datetime,timedelta
+import jwt
+from functools import wraps
 
+
+def token_required(f):
+    @wraps(f)
+    def _verify(*args, **kwargs):
+        auth_headers = request.headers.get('Authorization', '').split()
+
+        invalid_msg = {
+            'message': 'Invalid token. Registeration and / or authentication required',
+            'authenticated': False
+        }
+        expired_msg = {
+            'message': 'Expired token. Reauthentication required.',
+            'authenticated': False
+        }
+
+        if len(auth_headers) != 2:
+            return jsonify(invalid_msg), 401
+
+        try:
+            token = auth_headers[1]
+            data = jwt.decode(token, Config.SECRET_KEY)
+            user = users.query.filter_by(username=data['sub']).first()
+            if not user:
+                raise RuntimeError('User not found')
+            return f(user, *args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify(expired_msg), 401
+        except (jwt.InvalidTokenError, Exception) as e:
+            print(e)
+            return jsonify(invalid_msg), 401
+
+    return _verify
 
 ###
 # Routing for your application.
@@ -29,9 +64,6 @@ def index():
 def get_csrf():
  return jsonify({'csrf_token': generate_csrf()})
 
-@app.route('/api/auth/logcheck', methods=['GET'])
-def logcheck():
- return jsonify(auth = current_user.is_authenticated)
 
 @app.route('/api/register', methods = ['POST'])
 def register():
@@ -44,7 +76,7 @@ def register():
     form.email.data = request.form.get("email")
     form.locat.data = request.form.get("location")
     form.bio.data = request.form.get("biography")
-    date_reg = datetime.datetime.now()
+    date_reg = datetime.now()
     if(request.files['photo']):
         form.photo.data = request.files['photo']
     else:
@@ -57,41 +89,54 @@ def register():
         db.session.commit()  
     else:
         return jsonify(errors = form_errors(form))
-    return jsonify(message = "Registered Successfully")
+    return jsonify(user = user.todict())
 
 
 @app.route('/api/auth/login', methods = ['POST'])
 def login():
     form = LoginForm()
+    print(request.form)
+    print(Config.SECRET_KEY)
     if request.method == 'POST':
         if form.validate_on_submit():
             username = form.username.data
             password = form.password.data
             
-            user = users.query.filter_by(username=username).first()
-            if user is not None and check_password_hash(user.password, password):
-                login_user(user)
-                return jsonify(message = "Logged in Successfully",auth = True)
+            user = users.authenticate(username, password)
+            if not user:
+                return jsonify(errors = "Username or Password Incorrect", Authorization = False)
             else:
-                return jsonify(errors = "Username or Password Incorrect")
+                token = jwt.encode({
+                    'sub': user.username,
+                    'iat':datetime.utcnow(),
+                    'exp': datetime.utcnow() + timedelta(minutes=1540)},
+                     Config.SECRET_KEY)
+                print(token)
+                return jsonify({ 'token': token.decode('UTF-8'), 'message': 'Logged in Successfully'})
+                
         else:
             return jsonify(errors = form_errors(form))
+
+
 @app.route('/api/auth/logout', methods = ['POST'])
 def logout():
     return None
 
+
+@token_required
 @app.route('/api/cars', methods = ['POST'])
-def carsg():
+def add_car():
     return None
 
 @app.route('/api/cars', methods = ['GET'])
-def carsp():
+def display_car():
     return None
 
 @app.route('/api/cars/<car_id>', methods = ['GET'])
 def cars(car_id):
     return None
 
+@token_required
 @app.route('/api/cars/<car_id>/favourite', methods = ['POST'])
 def carsfav(car_id):
     return None
@@ -103,6 +148,7 @@ def search():
 @app.route('/api/users/<user_id>', methods = ['GET'])
 def userdata(user_id):
     return None
+
 
 @app.route('/api/users/<user_id>/favourites', methods = ['GET'])
 def userfav(user_id):
@@ -149,6 +195,8 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return jsonify(error="Page Not Found"), 404
+
+
 
 
 if __name__ == '__main__':

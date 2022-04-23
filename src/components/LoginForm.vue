@@ -39,7 +39,7 @@ export default {
               username: '',
           },
           auth: ''
-      }        
+      }         
     },
     created() {
         this.getCsrfToken();

@@ -1,5 +1,5 @@
 from . import db
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
 
 class cars(db.Model):
 
@@ -96,6 +96,23 @@ class users(db.Model):
             self.date_joined = date_joined
             self.photo = photo
 
+
+    @classmethod
+    def authenticate(cls, usrnm, passw):
+        username = usrnm
+        password = passw
+        
+        if not username or not password:
+            return None
+
+        user = cls.query.filter_by(username=username).first()
+        if not user or not check_password_hash(user.password, password):
+            return None
+
+        return user
+
+    def to_dict(self):
+        return dict(id=self.id, username=self.username,email=self.email)
 
     def is_authenticated(self):
         return True
