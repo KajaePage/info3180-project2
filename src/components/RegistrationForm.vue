@@ -53,7 +53,9 @@
 </template>
 
 <script>
+import shared from '@/shared'
 export default {
+    
     data() {
       return {
           response: {},
@@ -71,6 +73,16 @@ export default {
     },
     created() {
         this.getCsrfToken();
+        this.isValidJwt = shared.isValidJwt;
+    },
+    mounted() {
+    if (localStorage.token) {
+      this.token = localStorage.token;
+      console.log(this.isValidJwt(this.token))
+    }
+    if (localStorage.username) {
+      this.username = localStorage.username;
+    }
     },
     methods:{
         updatePhoto(files){

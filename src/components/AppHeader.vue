@@ -22,11 +22,14 @@
             <li class="nav-item">
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="!isvalid">
               <RouterLink class="nav-link" to="/register">Register</RouterLink>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="!isvalid">
               <RouterLink class="nav-link" to="/login">Login</RouterLink>
+            </li>
+            <li class="nav-item"  v-if="isvalid">
+              <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
             </li>
           </ul>
         </div>
@@ -36,7 +39,32 @@
 </template>
 
 <script>
+import shared from '@/shared';
 import { RouterLink } from "vue-router";
+export default {
+    data() {
+      return {
+          token: null
+      }        
+    },
+    
+    created() {
+        this.isValidJwt = shared.isValidJwt;
+    },
+    mounted() {
+    if (localStorage.token) {
+      this.token = localStorage.token;
+    }
+    if (localStorage.username) {
+      this.username = localStorage.username;
+    }
+    },
+    computed: {
+        isvalid() {
+            return this.isValidJwt(this.token);
+        }
+    }
+    }
 </script>
 
 <style>

@@ -19,7 +19,7 @@ from datetime import datetime,timedelta
 import jwt
 from functools import wraps
 
-
+blacklist = {}
 def token_required(f):
     @wraps(f)
     def _verify(*args, **kwargs):
@@ -89,7 +89,7 @@ def register():
         db.session.commit()  
     else:
         return jsonify(errors = form_errors(form))
-    return jsonify(user = user.todict())
+    return jsonify(user = user.to_dict())
 
 
 @app.route('/api/auth/login', methods = ['POST'])
@@ -106,26 +106,32 @@ def login():
             if not user:
                 return jsonify(errors = "Username or Password Incorrect", Authorization = False)
             else:
-                token = jwt.encode({
-                    'sub': user.username,
-                    'iat':datetime.utcnow(),
-                    'exp': datetime.utcnow() + timedelta(minutes=1540)},
-                     Config.SECRET_KEY)
-                print(token)
-                return jsonify({ 'token': token.decode('UTF-8'), 'message': 'Logged in Successfully'})
+                if(user.id in blacklist.keys()):
+                    return jsonify({ 'token': blacklist[user.id].decode('UTF-8'), 'message': 'Logged in Successfully', 'id': user.id})
+                else:
+                    token = jwt.encode({
+                        'sub': user.username,
+                        'iat':datetime.utcnow(),
+                        'exp': datetime.utcnow() + timedelta(minutes=1540)},
+                        Config.SECRET_KEY)
+                    print(token)
+                    return jsonify({ 'token': token.decode('UTF-8'), 'message': 'Logged in Successfully', 'id': user.id})
                 
         else:
             return jsonify(errors = form_errors(form))
 
 
 @app.route('/api/auth/logout', methods = ['POST'])
-def logout():
-    return None
-
-
 @token_required
+def logout(user):
+    blacklist[user.id] = request.headers.get('Authorization', '').split()[1]
+    return jsonify({'message': 'Logged out Successfully'})
+
+
+
 @app.route('/api/cars', methods = ['POST'])
-def add_car():
+@token_required
+def add_car(curr_user):
     return None
 
 @app.route('/api/cars', methods = ['GET'])
@@ -136,9 +142,10 @@ def display_car():
 def cars(car_id):
     return None
 
-@token_required
+
 @app.route('/api/cars/<car_id>/favourite', methods = ['POST'])
-def carsfav(car_id):
+@token_required
+def carsfav(curr_user,car_id):
     return None
 
 @app.route('/api/search', methods = ['GET'])

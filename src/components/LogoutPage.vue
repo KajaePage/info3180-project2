@@ -10,21 +10,11 @@
         <div v-if="response.message != 'novalue'" class = "success-message">
             {{response.message}}
         </div>
-        <form method="POST" enctype="multipart/form-data" id = "LoginForm" @submit.prevent="uploadPhoto" class = "formc">
-            <ul class="formstf">
-                <li class="form-field">
-                    <label>Username <span class="required">*</span></label>
-                    <input v-model="form.username" class="input" type="text" placeholder="Text input" name = "username">
-                </li>
+        <form method="POST" enctype="multipart/form-data" id = "LogoutForm" @submit.prevent="logout" class = "formc">
 
-                <li class="form-field">
-                    <label>Password <span class="required">*</span></label>
-                    <input v-model="form.password" class="input" type="text" placeholder="Text input" name = "password">
-                </li>
-
-            </ul>
-            <input class = "button" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()"/>
+            <input class = "button" id="submit" type="submit" value="Logout" @click.prevent="logout()"/>
         </form> 
+        
     </div>
 </template>
 
@@ -52,32 +42,38 @@ export default {
     if (localStorage.username) {
       this.username = localStorage.username;
     }
+    if (localStorage.user_id) {
+      this.id = localStorage.user_id;
+    }
     },
     methods:{
-        uploadPhoto(){
+        logout(){
             let self = this
-            let LoginForm = document.getElementById('LoginForm');
-            let form_data = new FormData(LoginForm);
-            fetch("/api/auth/login", { 
+            console.log(this.username)
+            fetch("/api/auth/logout?id=" + self.id, { 
                 method : 'POST',
                 headers: {
+                    'Authorization': `Bearer: ${this.token}`,
                     'X-CSRF-TOKEN': this.csrf_token
                 },
-                body: form_data
+                body:{
+                    username: self.username,
+                    token: self.token
+                }
             })
             .then(function (response) {
                 return response.json();
             })
             .then(function (data) {
-            // display a success message
-            self.auth = data.auth;
-            console.log(form_data.get('username'))
-            localStorage.username = form_data.get('username');
-            localStorage.user_id = data['id'];
-            localStorage.token = data['token']
-            
+                self.response = data
+                self.token = null
+                self.username = null
+                self.id = null
+                localStorage.removeItem('token')
+                localStorage.removeItem('user_id')
+                localStorage.removeItem('username')
+                window.location.href = '/';
             console.log(data);
-            window.location.href = '/';
             })
             .catch(function (error) {
             console.log(error);
