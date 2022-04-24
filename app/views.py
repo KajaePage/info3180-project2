@@ -223,9 +223,12 @@ def userfav(user,user_id):
          us = user.to_dict()
          print(us)
          favs = favourites.query.filter_by(user_id=us['id']).all()
-         print(favs)
-         print("??")
-         return jsonify(messgae= "Favourites found", favdata=[i.to_dict() for i in favs]) 
+         favdict = [i.to_dict() for i in favs]
+         favcar=[]
+         for f in favdict:
+             favcar.append(cars.query.filter_by(id=f['cid']).first().to_dict())
+             print(favcar)    
+         return jsonify(messgae= "Favourites found",favdata=favcar) 
      return jsonify(errors = ['Error Uploading'])
 ###
 # The functions below should be applicable to all Flask apps.
