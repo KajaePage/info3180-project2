@@ -173,7 +173,7 @@ def carsf(car_id):
 
 @app.route('/api/cars/<car_id>/favourite', methods = ['POST'])
 @token_required
-def carsfav(curr_user):
+def carsfav(curr_user,car_id):
     try:
         carid = request.args.get('car_id')
         fav = favourites(carid,curr_user.id)
