@@ -18,7 +18,7 @@ from flask_wtf.csrf import generate_csrf
 from datetime import datetime,timedelta
 import jwt
 from functools import wraps
-from sqlalchemy import or_
+from sqlalchemy import or_,and_
 
 blacklist = {}
 def token_required(f):
@@ -176,12 +176,15 @@ def carsf(car_id):
 def carsfav(curr_user,car_id):
     try:
         carid = request.args.get('car_id')
+        if favourites.query.filter(and_(favourites.car_id.like(car_id), favourites.user_id.like(curr_user.id))):
+            return jsonify(errors = ["Already in your favourites!"])
         fav = favourites(carid,curr_user.id)
         db.session.add(fav)
         db.session.commit()
         return jsonify(car = fav.to_dict(),message = "Car created Successfully!")
     except Exception as e:
-         return jsonify(errors = ["Failed to add car to favourites",e])
+        print(e)
+        return jsonify(errors = ["Failed to add car to favourites"])
 
 @app.route('/api/search', methods = ['GET'])
 @token_required
