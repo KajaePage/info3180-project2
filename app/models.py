@@ -1,6 +1,6 @@
 from . import db
 from werkzeug.security import generate_password_hash,check_password_hash
-
+import json
 class cars(db.Model):
 
     # You can use this to change the table name. The default convention is to use
@@ -44,7 +44,11 @@ class cars(db.Model):
         return '<User %r>' % (self.id)
 
     def to_dict(self):
-        return dict(id=self.id)
+        return dict(id=self.id,user_id=self.user_id,desc = self.desc, make = self.make, model = self.model,price = self.price, colour = self.colour, year = self.year, transmission = self.transmission, car_type= self.car_type, photo = self.photo)
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
 
 class favourites(db.Model):
     # You can use this to change the table name. The default convention is to use
@@ -69,8 +73,13 @@ class favourites(db.Model):
         except NameError:
             return str(self.id)  # python 3 support
 
+    def to_dict(self):
+        return dict(fid=self.id,uid=self.user_id,cid=self.car_id)
+
     def __repr__(self):
         return '<User %r>' % (self.id)
+    
+    
 
 class users(db.Model):
     # You can use this to change the table name. The default convention is to use

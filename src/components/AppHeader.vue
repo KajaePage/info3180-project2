@@ -34,6 +34,9 @@
             <li class="nav-item"  v-if="isvalid">
               <RouterLink class="nav-link" to="/cars/new">New Car</RouterLink>
             </li>
+            <li class="nav-item"  v-if="isvalid">
+              <RouterLink class="nav-link" to="/explore">Explore</RouterLink>
+            </li>
           </ul>
         </div>
       </div>

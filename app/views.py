@@ -159,7 +159,8 @@ def add_car(user):
 
 @app.route('/api/cars', methods = ['GET'])
 def display_car():
-    return None
+    carl = cars.query.all()
+    return jsonify(carlist = [i.to_dict() for i in carl])
 
 @app.route('/api/cars/<car_id>', methods = ['GET'])
 def carsf(car_id):
@@ -168,8 +169,15 @@ def carsf(car_id):
 
 @app.route('/api/cars/<car_id>/favourite', methods = ['POST'])
 @token_required
-def carsfav(curr_user,car_id):
-    return None
+def carsfav(curr_user):
+    try:
+        carid = request.args.get('car_id')
+        fav = favourites(carid,curr_user.id)
+        db.session.add(fav)
+        db.session.commit()
+        return jsonify(car = fav.to_dict(),message = "Car created Successfully!")
+    except Exception as e:
+         return jsonify(errors = ["Failed to add car to favourites",e])
 
 @app.route('/api/search', methods = ['GET'])
 def search():
@@ -181,6 +189,7 @@ def userdata(user_id):
 
 
 @app.route('/api/users/<user_id>/favourites', methods = ['GET'])
+@token_required
 def userfav(user_id):
     return None
 ###
