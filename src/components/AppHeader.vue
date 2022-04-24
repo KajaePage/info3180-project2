@@ -31,6 +31,9 @@
             <li class="nav-item"  v-if="isvalid">
               <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
             </li>
+            <li class="nav-item"  v-if="isvalid">
+              <RouterLink class="nav-link" to="/cars/new">New Car</RouterLink>
+            </li>
           </ul>
         </div>
       </div>

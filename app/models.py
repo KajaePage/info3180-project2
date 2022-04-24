@@ -43,6 +43,9 @@ class cars(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.id)
 
+    def to_dict(self):
+        return dict(id=self.id)
+
 class favourites(db.Model):
     # You can use this to change the table name. The default convention is to use
     # the class name. In this case a class name of UserProfile would create a
@@ -85,7 +88,7 @@ class users(db.Model):
     biography = db.Column(db.String(512))
     date_joined = db.Column(db.Date())
     photo = db.Column(db.String(128))
-
+               #(self, user_id, desc, make, model, price, colour, year, transmission, car_type, photo):
     def __init__(self, username, password, name, email, location, biography, date_joined, photo):
             self.username = username
             self.password = generate_password_hash(password, method='pbkdf2:sha256')

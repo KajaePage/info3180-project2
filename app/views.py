@@ -107,7 +107,7 @@ def login():
                 return jsonify(errors = "Username or Password Incorrect", Authorization = False)
             else:
                 if(user.id in blacklist.keys()):
-                    return jsonify({ 'token': blacklist[user.id].decode('UTF-8'), 'message': 'Logged in Successfully', 'id': user.id})
+                    return jsonify({ 'token': blacklist[user.id], 'message': 'Logged in Successfully', 'id': user.id})
                 else:
                     token = jwt.encode({
                         'sub': user.username,
@@ -124,22 +124,45 @@ def login():
 @app.route('/api/auth/logout', methods = ['POST'])
 @token_required
 def logout(user):
-    blacklist[user.id] = request.headers.get('Authorization', '').split()[1]
+    print(user)
     return jsonify({'message': 'Logged out Successfully'})
 
 
 
 @app.route('/api/cars', methods = ['POST'])
 @token_required
-def add_car(curr_user):
-    return None
+def add_car(user):
+    print(request.headers.get('X-CSRF-TOKEN'))
+    print('------ {0}'.format(request.form))
+    form = CarForm()
+    form.make.data = request.form.get("make")
+    form.model.data = request.form.get("model")
+    form.colour.data = request.form.get("colour")
+    form.transmission.data = request.form.get("transmission")
+    form.year.data = request.form.get("year")
+    form.price.data = request.form.get("price")
+    form.car_type.data = request.form.get("car_type")
+    form.desc.data = request.form.get("desc")
+    if(request.files['photo']):
+        form.photo.data = request.files['photo']
+    else:
+        return jsonify(errors = form_errors(form))
+    if form.validate_on_submit():
+        filename = secure_filename(form.photo.data.filename)
+        form.photo.data.save(app.config['UPLOAD_FOLDER'] + '/' + filename)
+        car = cars(user.id,form.desc.data,form.make.data,form.model.data,form.price.data,form.colour.data,form.year.data,form.transmission.data,form.car_type.data,filename)
+        db.session.add(car)
+        db.session.commit()  
+    else:
+        return jsonify(errors = form_errors(form))
+    return jsonify(car = car.to_dict(),message = "Car created Successfully!")
 
 @app.route('/api/cars', methods = ['GET'])
 def display_car():
     return None
 
 @app.route('/api/cars/<car_id>', methods = ['GET'])
-def cars(car_id):
+def carsf(car_id):
     return None
 
 

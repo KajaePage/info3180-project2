@@ -83,6 +83,9 @@ export default {
     if (localStorage.username) {
       this.username = localStorage.username;
     }
+    if (localStorage.user_id) {
+      this.id = localStorage.user_id;
+    }
     },
     methods:{
         updatePhoto(files){
