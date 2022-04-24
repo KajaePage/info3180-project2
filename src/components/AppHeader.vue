@@ -37,6 +37,9 @@
             <li class="nav-item"  v-if="isvalid">
               <RouterLink class="nav-link" to="/explore">Explore</RouterLink>
             </li>
+            <li class="nav-item"  v-if="isvalid">
+              <RouterLink class="nav-link" to="/users/{{localStorage.user_id}}">My Profile</RouterLink>
+            </li>
           </ul>
         </div>
       </div>

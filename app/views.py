@@ -184,14 +184,20 @@ def search():
     return None
 
 @app.route('/api/users/<user_id>', methods = ['GET'])
-def userdata(user_id):
-    return None
+@token_required
+def userdatap(user,user_id):
+     if request.method == 'GET':
+         return jsonify(messgae= "User found", user_data=user.to_dict()) 
+
 
 
 @app.route('/api/users/<user_id>/favourites', methods = ['GET'])
 @token_required
 def userfav(user_id):
-    return None
+     if request.method == 'GET':
+         favs = favourites.query.filter_by(user_id=userid).all()
+         return jsonify(messgae= "Favourites found", favdata=favs.fto_dict()) 
+     return jsonify(errors = ['Error Uploading'])
 ###
 # The functions below should be applicable to all Flask apps.
 ###
