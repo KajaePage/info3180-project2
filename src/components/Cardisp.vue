@@ -4,33 +4,49 @@
  <label class="visually-hidden" for="search">Search</label>
  <input type="search" name="search" v-model="searchTerm" id="search" class="form-control mb-2 mr-sm-2" placeholder="Enter search term here" />
  <input type="search" name="search" v-model="searchModel" id="search" class="form-control mb-2 mr-sm-2" placeholder="Enter search term here" />
- <button class="btn btn-primary mb-2">Search</button>
+ <button class="btn btn-primary mb-2" @click ="searchCars()">Search</button>
  </div>
  <p>You are searching for {{ searchTerm }}</p>
  </form>
- <ul class="news__list">
- <li v-for="car in top3" class="news__item">
+ <ul class="news__list" v-if="!searched">
+ <li  v-for="car in top3" class="news__item">
      
      <div class="card">
       <img :src="getImgUrl(car.photo)"/>
      <div class="card__details">
-        <div class="ntitle">{{ car.make }}</div>
-        <p class = "ndesc">{{car.desc}}</p>
+        <div class="ntitle">{{ car.year }} {{ car.make }}</div>
+        <p class = "ndesc">{{car.model}}</p>
          <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="uploadPhoto()"/>
      </div>
      </div>
-     </li>
+</li>
+</ul>
+<ul class="news__list" v-else>
+ <li  v-for="car in temp2" class="news__item">
+     
+     <div class="card">
+      <img :src="getImgUrl(car.photo)"/>
+     <div class="card__details">
+        <div class="ntitle">{{ car.year }} {{ car.make }}</div>
+        <p class = "ndesc">{{car.model}}</p>
+         <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="uploadPhoto()"/>
+     </div>
+     </div>
+</li>
  </ul>
 </template>
 
 <script>
+import shared from '@/shared'
 export default {
     data() {
         return {
             carlist:[],
             temp:[],
+            temp2:[],
             searchTerm: '',
-            searchModel: ''
+            searchModel: '',
+            searched: false
         };
     },
     mounted() {
@@ -47,6 +63,7 @@ export default {
     created(){
         this.fgetCars()
         this.getCsrfToken();
+        this.sanitize = shared.sanitize;
     },
     // watch: {
     //     checker() {
@@ -73,20 +90,25 @@ export default {
             });
         },
         
-        searchNews() {
+        
+        searchCars() {
             let self = this;
-            fetch('https://newsapi.org/v2/everything?q='+self.searchTerm + '&language=en', {
-            headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_NEWSAPI_TOKEN}`,
-            }
-            })
-            .then(function(response) {
-            return response.json();
-            })
-            .then(function(data) {
-                console.log(data);
-                self.carlist = data.carlist;
-            });
+            console.log('searched stuff')
+            fetch('/api/search?make=' + this.sanitize(self.searchTerm) + "&model=" + this.sanitize(self.searchModel), {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer: ${this.token}`,
+                }
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    console.log(data);
+                    console.log('Pain')
+                    self.temp2 = data.carlist;
+                    self.searched = true
+                });
         },
         getCsrfToken(){
             let self = this;
@@ -101,25 +123,10 @@ export default {
     computed: {
         top3(){
             let self = this
-            if (self.searchTerm){
-                console.log('searched stuff')
-                fetch('/api/cars?st=' + self.searchTerm, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer: ${this.token}`,
-                        'X-CSRF-TOKEN': this.csrf_token
-                    }
-                    })
-                    .then(function(response) {
-                        return response.json();
-                    })
-                    .then(function(data) {
-                        console.log(data);
-                        console.log('Pain')
-                        self.temp = data.carlist;
-                    });
-                return self.carlist
+            if (self.searchTerm || self.searchModel){
+                console.log('check')
             }else{
+                this.searched = false
                 console.log('no search top 3')
                 self.temp = self.carlist.map((x) => x);
                 console.log(self.temp)

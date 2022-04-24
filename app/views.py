@@ -18,6 +18,7 @@ from flask_wtf.csrf import generate_csrf
 from datetime import datetime,timedelta
 import jwt
 from functools import wraps
+from sqlalchemy import or_
 
 blacklist = {}
 def token_required(f):
@@ -180,7 +181,25 @@ def carsfav(curr_user):
          return jsonify(errors = ["Failed to add car to favourites",e])
 
 @app.route('/api/search', methods = ['GET'])
-def search():
+@token_required
+def searchl(user):
+    make = request.args.get('make')
+    model = request.args.get('model')
+    print(make)
+    print(model)
+    if model and not make:
+        make = "ksdgwot939grfuwydwcdwjgdajda"
+    elif make and not model:
+        model = "ksdgwot939grfuwydwcdwjgdajda"
+    elif not make and not model:
+        make = ''
+        model = ''
+    try:
+        res = cars.query.filter(or_(cars.model.like(model),cars.make.contains(make))).all()
+        print(res)
+        return jsonify(carlist = [i.to_dict() for i in res])
+    except Exception as e:
+        print(e)
     return None
 
 @app.route('/api/users/<user_id>', methods = ['GET'])

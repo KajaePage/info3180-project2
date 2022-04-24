@@ -8,5 +8,9 @@ export default {
           const exp = new Date(data.exp * 1000) // JS deals with dates in milliseconds since epoch
           const now = new Date()
           console.log(now < exp)
-          return now < exp }
+          return now < exp },
+    sanitize: function sanitizeString(str){
+        str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");
+        return str.trim();
+    }
 }
