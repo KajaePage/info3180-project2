@@ -77,5 +77,7 @@ export default {
 </script>
 
 <style>
-/* Add any component specific styles here */
+.navbar.navbar-expand-lg.navbar-dark.bg-primary.fixed-top{
+  background-color: pink
+}
 </style>

@@ -44,27 +44,12 @@ export default
     created() {
         let self = this
         this.getCsrfToken();
-        fetch("/api/cars/<car_id>?id="+localStorage.cid,
-         {method: 'GET',headers: {'Authorization': `Bearer: ${localStorage.token}`}})
-            .then(function (response) {
-                return response.json();
-            })
-        .then(function (data) {
-            // display a success message
-            self.car = data["car_data"]
-            console.log(self.car);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        this.fgetsCars()
     },
         computed:
     {
        display: function() 
        {
-           
-           console.log("AAAAAAAAAAAA");
-           console.log(self.car);
            return this.car;
        }
     },
@@ -80,6 +65,29 @@ export default
     }
     },
     methods: {
+        getImgUrl(pet) {
+            self.url = '../uploads/' + pet
+            if (! url) {
+                return ''; //or perhaps a placeholder loading image 
+            }
+            return self.url
+        },
+        async fgetsCars(){
+            let self = this
+            fetch("/api/cars/<car_id>?id="+localStorage.cid,
+        {method: 'GET',headers: {'Authorization': `Bearer: ${localStorage.token}`}})
+            .then(function (response) {
+                return response.json();
+            })
+        .then(function (data) {
+            // display a success message
+            self.car = data["car_data"]
+            console.log(self.car);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+        },
         getCsrfToken(){
             let self = this;
             fetch('/api/csrf-token')
@@ -88,13 +96,6 @@ export default
                 console.log(data);
                 self.csrf_token = data.csrf_token;
             })
-        },
-        getImgUrl(pet) {
-            self.url = './uploads/' + pet
-            if (! url) {
-                return ''; //or perhaps a placeholder loading image 
-            }
-            return self.url
         },
         add_to_fav(){
             fetch('/api/cars/<car_id>/favourite?car_id=' + localStorage.cid, {

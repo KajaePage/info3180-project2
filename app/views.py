@@ -167,7 +167,6 @@ def display_car():
 def carsf(car_id):
     car_id = request.args.get('id')
     cardata = cars.query.filter_by(id=car_id).first()
-    print(cardata)
     return jsonify(messgae= "Car found", car_data=cardata.to_dict())
 
 
@@ -176,7 +175,7 @@ def carsf(car_id):
 def carsfav(curr_user,car_id):
     try:
         carid = request.args.get('car_id')
-        if favourites.query.filter(and_(favourites.car_id.like(car_id), favourites.user_id.like(curr_user.id))):
+        if favourites.query.filter(and_(favourites.car_id==carid, favourites.user_id==curr_user.id)).first():
             return jsonify(errors = ["Already in your favourites!"])
         fav = favourites(carid,curr_user.id)
         db.session.add(fav)
@@ -218,10 +217,15 @@ def userdatap(user,user_id):
 
 @app.route('/api/users/<user_id>/favourites', methods = ['GET'])
 @token_required
-def userfav(user_id):
+def userfav(user,user_id):
+     print('here')
      if request.method == 'GET':
-         favs = favourites.query.filter_by(user_id=userid).all()
-         return jsonify(messgae= "Favourites found", favdata=favs.fto_dict()) 
+         us = user.to_dict()
+         print(us)
+         favs = favourites.query.filter_by(user_id=us['id']).all()
+         print(favs)
+         print("??")
+         return jsonify(messgae= "Favourites found", favdata=[i.to_dict() for i in favs]) 
      return jsonify(errors = ['Error Uploading'])
 ###
 # The functions below should be applicable to all Flask apps.

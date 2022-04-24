@@ -124,7 +124,7 @@ class users(db.Model):
         return user
 
     def to_dict(self):
-        return dict(id=self.id, username=self.username,email=self.email)
+        return dict(id=self.id,name=self.name, username=self.username,email=self.email,location=self.location,biography=self.biography,date_joined=self.date_joined,photo=self.photo)
 
     def is_authenticated(self):
         return True
