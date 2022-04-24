@@ -165,7 +165,10 @@ def display_car():
 
 @app.route('/api/cars/<car_id>', methods = ['GET'])
 def carsf(car_id):
-    return None
+    car_id = request.args.get('id')
+    cardata = cars.query.filter_by(id=car_id).first()
+    print(cardata)
+    return jsonify(messgae= "Car found", car_data=cardata.to_dict())
 
 
 @app.route('/api/cars/<car_id>/favourite', methods = ['POST'])

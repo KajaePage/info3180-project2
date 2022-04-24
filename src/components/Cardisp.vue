@@ -16,7 +16,7 @@
      <div class="card__details">
         <div class="ntitle">{{ car.year }} {{ car.make }}</div>
         <p class = "ndesc">{{car.model}}</p>
-         <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="uploadPhoto()"/>
+         <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="gotocar(car.id)"/>
      </div>
      </div>
 </li>
@@ -29,7 +29,7 @@
      <div class="card__details">
         <div class="ntitle">{{ car.year }} {{ car.make }}</div>
         <p class = "ndesc">{{car.model}}</p>
-         <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="uploadPhoto()"/>
+         <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="gotocar(car.id)"/>
      </div>
      </div>
 </li>
@@ -89,7 +89,12 @@ export default {
                 self.carlist = data.carlist;
             });
         },
-        
+        gotocar(cid)
+          {
+              this.$router.push({path: '/cars/${cid}'});
+              localStorage.cid = cid;
+              console.log(cid);
+          },  
         
         searchCars() {
             let self = this;
