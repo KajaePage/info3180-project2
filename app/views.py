@@ -106,16 +106,16 @@ def login():
             if not user:
                 return jsonify(errors = "Username or Password Incorrect", Authorization = False)
             else:
-                if(user.id in blacklist.keys()):
-                    return jsonify({ 'token': blacklist[user.id], 'message': 'Logged in Successfully', 'id': user.id})
-                else:
-                    token = jwt.encode({
-                        'sub': user.username,
-                        'iat':datetime.utcnow(),
-                        'exp': datetime.utcnow() + timedelta(minutes=1540)},
-                        Config.SECRET_KEY)
-                    print(token)
-                    return jsonify({ 'token': token.decode('UTF-8'), 'message': 'Logged in Successfully', 'id': user.id})
+                # if(user.id in blacklist.keys()):
+                #     return jsonify({ 'token': blacklist[user.id], 'message': 'Logged in Successfully', 'id': user.id})
+                # else:
+                token = jwt.encode({
+                    'sub': user.username,
+                    'iat':datetime.utcnow(),
+                    'exp': datetime.utcnow() + timedelta(minutes=1540)},
+                    Config.SECRET_KEY)
+                print(token)
+                return jsonify({ 'token': token.decode('UTF-8'), 'message': 'Logged in Successfully', 'id': user.id})
                 
         else:
             return jsonify(errors = form_errors(form))
