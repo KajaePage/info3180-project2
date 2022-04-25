@@ -1,15 +1,8 @@
 <template>
+
+<div class="card" style="width: 40rem; height: 35rem; padding:20px; margin-left: 49px; margin-left: 245px;">
     <div class = "container">
-        <div v-if="response.errors != 'novalue'" class = "error-message">
-            <ul id="vlist">
-                <li v-for="(error, index) in response.errors">
-                    {{ error }}
-                </li>
-            </ul>
-        </div>
-        <div v-if="response.message != 'novalue'" class = "success-message">
-            {{response.message}}
-        </div>
+        
         <form method="POST" enctype="multipart/form-data" id = "RegistrationForm" @submit.prevent="uploadPhoto" class = "formc">
             <ul class="formstf">
                 <li class="form-field1">
@@ -51,6 +44,17 @@
             <button class = "buttonreg"  id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()" style="background-color: #0fb881;">Register</button>
         </form> 
     </div>
+    </div>
+    <div v-if="response.errors != 'novalue'" class = "error-message">
+            <ul id="vlist">
+                <li v-for="(error, index) in response.errors">
+                    {{ error }}
+                </li>
+            </ul>
+        </div>
+        <div v-if="response.message != 'novalue'" class = "success-message">
+            {{response.message}}
+        </div>
 </template>
 
 <script>
@@ -214,7 +218,7 @@ export default {
   .error-message{
       background-color: #F8D7DA;
       color: #701A22;
-      float:right;
+      
   }
 
   .success-message{

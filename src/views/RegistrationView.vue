@@ -2,9 +2,8 @@
 <template>
     <div class="form container">
         <h2 style="font-weight: bolder; margin-left: 49px; margin-left: 245px; margin-bottom: 20px;">Register New User</h2>
-        <div class="card" style="width: 40rem; height: 35rem; padding:20px; margin-left: 49px; margin-left: 245px;">
-            <RegistrationForm />
-        </div>
+        <RegistrationForm />
+
     </div>
     
 </template>
