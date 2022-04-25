@@ -121,6 +121,9 @@ export default {
             // display a success message
             self.response = data;
             console.log(data);
+            if(!data.errors){
+                window.location.href = '/';
+            }
             })
             .catch(function (error) {
             console.log(error);

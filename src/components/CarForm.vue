@@ -146,9 +146,11 @@ export default {
             // display a success message
             self.response = data;
             console.log(data);
+            window.location.href = '/explore';
             })
             .catch(function (error) {
             console.log(error);
+
             });   
         },
         getCsrfToken(){
