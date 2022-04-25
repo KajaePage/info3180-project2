@@ -12,51 +12,67 @@
         </div>
         <form method="POST" enctype="multipart/form-data" id = "CarForm" @submit.prevent="uploadPhoto" class = "formc">
             <ul class="formstf">
-                <li class="form-field">
-                    <label>Make <span class="required">*</span></label>
-                    <input v-model="form.make" class="input" type="text" placeholder="Text input" name = "make">
+                <li class="form-field make">
+                    <label>Make</label>
+                    <input v-model="form.make" class="input" type="text" placeholder="Tesla" name = "make" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>model <span class="required">*</span></label>
-                    <input v-model="form.model" class="input" type="text" placeholder="Text input" name = "model">
+                <li class="form-field model">
+                    <label>Model</label>
+                    <input v-model="form.model" class="input" type="text" placeholder="Model S" name = "model" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>colour <span class="required">*</span></label>
-                    <input v-model="form.colour" class="input" type="text" placeholder="Text input" name = "colour">
+                <li class="form-field color">
+                    <label>Colour</label>
+                    <input v-model="form.colour" class="input" type="text" placeholder="Red" name = "colour" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>transmission <span class="required">*</span></label>
-                    <input v-model="form.transmission" class="input" type="text" placeholder="Text input" name = "transmission">
+                 <li class="form-field year">
+                    <label>Year</label>
+                    <input v-model="form.year" class="input" type="text" placeholder="2018" name = "year" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>year <span class="required">*</span></label>
-                    <input v-model="form.year" class="input" type="text" placeholder="Text input" name = "year">
+                  <li class="form-field price">
+                    <label>Price</label>
+                    <input v-model="form.price" class="input" type="text" placeholder="62868" name = "price" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>description <span class="required">*</span></label>
-                    <input v-model="form.desc" class="input" type="text" placeholder="Text input" name = "desc">
+                <li class="form-field type">
+                    <label>Car Type</label>
+                    <select v-model="form.car_type" class="input" type="text" placeholder="SUV" name = "car_type" >
+                        <option value="SUV">SUV</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Van">Van</option>
+                        <option value="Hyibrid/Electric">Hybrid/Electric</option>
+                        <option value="Convertable">Convertable</option>
+                        <option value="Coupe">Coupe</option>
+                        <option value="Wagon">Wagon</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="Sports Car">Sports Car</option>
+                        <option value="Crossover">Crossover</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Luxury Car">Luxury Car</option>
+                    </select>
                 </li>
-                <li class="form-field">
-                    <label>type <span class="required">*</span></label>
-                    <input v-model="form.car_type" class="input" type="text" placeholder="Text input" name = "car_type">
+                <li class="form-field transmission">
+                    <label>Transmission</label>
+                    <select v-model="form.transmission" name = "transmission">
+                        <option value="Automatic"> Automatic</option>
+                        <option value="Manual">Manual</option>
+                    </select>
                 </li>
 
-                <li class="form-field">
-                    <label>price <span class="required">*</span></label>
-                    <input v-model="form.price" class="input" type="text" placeholder="Text input" name = "price">
+                <li class="form-field des">
+                    <label>Description</label>
+                    <textarea v-model="form.desc" class="input" type="text" name = "desc" rows="4" cols="65"></textarea>
                 </li>
 
-                <li class="form-field">
-                    <label>Photo <span class="required">*</span></label>
+                <li class="form-field up">
+                    <label>Upload Photo</label>
                     <input type="file" accept="image/*" class="form-control-file" @change="updatePhoto($event.target.files)" id ="photo" name= "photo">
                 </li>
             </ul>
-            <input class = "button" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()"/>
+            <button class = "buttonsave" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()"  style="background-color: #0fb881;"> Save</button>
         </form> 
     </div>
 </template>

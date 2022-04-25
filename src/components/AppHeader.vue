@@ -1,8 +1,9 @@
 <template>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bf-primary fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">Lab 7</a>
+        <a class="navbar-brand" href="/"><i class="fa fa-car" style="font-size: 20px;color:white;"></i> United Auto Sales</a> 
         <button
           class="navbar-toggler"
           type="button"
@@ -77,7 +78,10 @@ export default {
 </script>
 
 <style>
-.navbar.navbar-expand-lg.navbar-dark.bg-primary.fixed-top{
-  background-color: pink
+nav {
+  background-color: #202938;
+}
+i{
+  margin-right: 5px;
 }
 </style>

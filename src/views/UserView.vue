@@ -1,6 +1,6 @@
 <template>
     <div class="Upload container">
-    <h2>UserData</h2>
+    <h2>My Profile</h2>
     </div>
     <UserProfile />
     <div></div>

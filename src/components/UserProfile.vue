@@ -1,9 +1,9 @@
 <template>
-<div class="userdata">
+
     <div class="card mb-3" >
     <div class="row no-gutters">
-      <div class="col-md-4">
-        <img :src="getImgUrl(display.photo)" class="card-img">
+      <div class="col-md-4 cntrpfp">
+        <img :src="getImgUrl(display.photo)" class="reset-this cimg pfp">
       </div>
       <div class="col-md-8">
         <div class="card-body">
@@ -21,17 +21,18 @@
      <ul class="news__list">
     <li  v-for="car in cardisplay" class="news__item">
      
-     <div class="card">
-      <img :src="getImgUrl(car.photo)"/>
+     <div class="card1">
+      <img :src="getImgUrl(car.photo)" class="reset-this cimg"/>
      <div class="card__details">
         <div class="ntitle">{{ car.year }} {{ car.make }}</div>
         <p class = "ndesc">{{car.model}}</p>
-         <input class = "pbut" id="pbut" type="button" value="submit" @click.prevent="gotocar(car.id)"/>
+        <span class="tag">${{car.price}}</span>
+         <input class = "pbut" id="pbut" type="button" value="View more details" @click.prevent="gotocar(car.id)"/>
      </div>
      </div>
     </li>
     </ul>
-    </div>  
+ 
          
 </template>
 
@@ -86,12 +87,7 @@ export default
        {
            return this.carlist;
        },
-       gotocar(cid)
-          {
-              this.$router.push({path: '/cars/${cid}'});
-              localStorage.cid = cid;
-              console.log(cid);
-          },  
+       
     },
     mounted() {
      window.onbeforeunload = () => {
@@ -111,12 +107,26 @@ export default
                 return ''; //or perhaps a placeholder loading image 
             }
             return self.url
-        }    
+        },
+        gotocar(cid)
+          {
+              console.log(cid)
+              this.$router.push({path: '/cars/${cid}'});
+              console.log("AAAAAAAAAAAAAAAAA")
+              console.log(cid)
+              localStorage.setItem('cid', cid);
+              console.log(cid);
+          },  
     }
 }
 </script>
 
 <style>
+.cntrpfp{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .news__list{
     display: grid;
  
@@ -128,14 +138,14 @@ export default
     
     list-style-type: none;
 }
-.card {
+.pfp {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
 
-    background-color: white;
-    border: 1px solid #bacdd8;
-    padding: 8px;
-    border-radius: 12px;
-  }
-
+  object-fit: cover;
+}
 .news__list li img{
     width: 100%;
     height: 214px;

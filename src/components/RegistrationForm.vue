@@ -12,42 +12,43 @@
         </div>
         <form method="POST" enctype="multipart/form-data" id = "RegistrationForm" @submit.prevent="uploadPhoto" class = "formc">
             <ul class="formstf">
-                <li class="form-field">
-                    <label>Username <span class="required">*</span></label>
-                    <input v-model="form.username" class="input" type="text" placeholder="Text input" name = "username">
+                <li class="form-field1">
+                    <label>Username</label>
+                    <input v-model="form.username" class="input-user" type="text"  name = "username" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>Password <span class="required">*</span></label>
-                    <input v-model="form.password" class="input" type="text" placeholder="Text input" name = "password">
+                <li class="form-field2">
+                    <label>Password</label>
+                    <input v-model="form.password" class="input" type="text"  name = "password" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>Name <span class="required">*</span></label>
-                    <input v-model="form.name" class="input" type="text" placeholder="Text input" name = "name">
+                <li class="form-field3">
+                    <label>Fullname</label>
+                    <input v-model="form.name" class="input" type="text"  name = "name" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>Location <span class="required">*</span></label>
-                    <input v-model="form.locat" class="input" type="text" placeholder="Text input" name = "location">
+                <li class="form-field4">
+                    <label>Email</label>
+                    <input v-model="form.email" class="input" type="email" name = "email" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>Biography <span class="required">*</span></label>
-                    <input v-model="form.bio" class="input" type="text" placeholder="Text input" name = "biography">
+                <li class="form-field5">
+                    <label>Location</label>
+                    <input v-model="form.locat" class="input" type="text"  name = "location" size="28">
                 </li>
 
-                <li class="form-field">
-                    <label>Email <span class="required">*</span></label>
-                    <input v-model="form.email" class="input" type="email" placeholder="Text input" name = "email">
+                <li class="form-field6">
+                    <label>Biography</label>
+                    <textarea v-model="form.bio" class="input-bio"  name = "biography" rows="4" cols="65" ></textarea>
                 </li>
 
-                <li class="form-field">
-                    <label>Photo <span class="required">*</span></label>
-                    <input type="file" accept="image/*" class="form-control-file" @change="updatePhoto($event.target.files)" id ="photo" name= "photo">
+                <li class="form-field7">
+                    <label> Upload Photo</label>
+                    <input type="file" accept="image/*" class="form-control-file photo" @change="updatePhoto($event.target.files)" id ="photo" name= "photo">
+                    
                 </li>
             </ul>
-            <input class = "button" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()"/>
+            <button class = "buttonreg"  id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()" style="background-color: #0fb881;">Register</button>
         </form> 
     </div>
 </template>

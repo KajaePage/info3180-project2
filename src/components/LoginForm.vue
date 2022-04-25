@@ -12,18 +12,18 @@
         </div>
         <form method="POST" enctype="multipart/form-data" id = "LoginForm" @submit.prevent="uploadPhoto" class = "formc">
             <ul class="formstf">
-                <li class="form-field">
-                    <label>Username <span class="required">*</span></label>
-                    <input v-model="form.username" class="input" type="text" placeholder="Text input" name = "username">
+                <li class="form-field-1">
+                    <label>Username</label>
+                    <input v-model="form.username" class="input" type="text"  name = "username">
                 </li>
 
-                <li class="form-field">
-                    <label>Password <span class="required">*</span></label>
-                    <input v-model="form.password" class="input" type="text" placeholder="Text input" name = "password">
+                <li class="form-field-2">
+                    <label>Password</label>
+                    <input v-model="form.password" class="input" type="text" name = "password">
                 </li>
 
             </ul>
-            <input class = "button" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()"/>
+            <button class = "buttonlog" id="submit" type="submit" value="submit" @click.prevent="uploadPhoto()" style="background-color: #0fb881;">Login</button>/>
         </form> 
     </div>
 </template>
