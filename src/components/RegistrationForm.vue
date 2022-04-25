@@ -214,6 +214,7 @@ export default {
   .error-message{
       background-color: #F8D7DA;
       color: #701A22;
+      float:right;
   }
 
   .success-message{
