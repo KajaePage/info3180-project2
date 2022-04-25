@@ -19,6 +19,8 @@ from datetime import datetime,timedelta
 import jwt
 from functools import wraps
 from sqlalchemy import or_,and_
+from flask import Flask, jsonify, send_file
+import os
 
 blacklist = {}
 def token_required(f):
@@ -59,7 +61,7 @@ def token_required(f):
 
 @app.route('/')
 def index():
-    return jsonify(message="This is the beginning of our API")
+ return send_file(os.path.join('../dist/', 'index.html'))
 
 @app.route('/api/csrf-token', methods=['GET'])
 def get_csrf():
